@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Convert HTML To Image</title>
+    <script src = "https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js">
+    </script>
+    <script src = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js">
+      
+    </script>
+
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/face-landmarks-detection"></script>
+
+</head>
+  <style media="screen">
+    #htmlContent{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 800px;
+      height: 800px;
+    }
+
+    #pfpic{
+      margin-left: 15%;
+      position: absolute;
+      z-index: -1;
+    }
+  </style>
+  <body onload = "autoClick();">
+
+    <div id = "htmlContent">
+      <img src="FB.png" alt="" id="img" width="800" height="800">
+      <img id="pfpic" src="" alt="" width="500" height="500">
+      
+      
+    </div>
+    <br/>
+    <p>Image width</p>
+        <input type="range" min="500" max="1000" value="500" class="slider" id="rangerw" onchange="setVal(this.value)">
+      </div>
+      <input type="file" accept="image/jpeg, image/png, image/jpg" id="uploader" class="inpt"> 
+      <label for="uploader" id="lvl">IMAGE LOADING</label> 
+      <input type="text" id="name" name="name" placeholder="">
+      <br/>
+    <a id="download">Download</a>
+
+    <script type="text/javascript">
+      async function loadFaceLandmarksModel() {
+    const model = await tf.loadGraphModel('@tensorflow-models/face-landmarks-detection/model.json');
+    return model;
+}
+
+// Detect faces in the image and fit bounding boxes around them
+async function detectFacesAndFitBoxes(imageElement) {
+    const model = await loadFaceLandmarksModel();
+
+    // Convert image to tensor
+    const img = tf.browser.fromPixels(imageElement);
+    const input = img.toFloat().expandDims(0);
+
+    // Detect faces
+    const predictions = await model.executeAsync(input);
+
+    // Draw bounding boxes around detected faces
+    const ctx = imageElement.getContext('2d');
+    ctx.strokeStyle = 'red';
+    ctx.lineWidth = 2;
+
+    for (const prediction of predictions) {
+        const [startX, startY, endX, endY] = prediction.boundingBox;
+        ctx.beginPath();
+        ctx.rect(startX, startY, endX - startX, endY - startY);
+        ctx.stroke();
+    }
+}
+
+// Example usage:
+const imageElement = document.getElementById('uploder');
+detectFacesAndFitBoxes(imageElement);
+
+      function autoClick(){
+        $("#download").click();
+      }
+
+      $(document).ready(function(){
+        var element = $("#htmlContent");
+
+        $("#download").on('click', function(){
+
+          html2canvas(element, {
+            onrendered: function(canvas) {
+              var imageData = canvas.toDataURL("image/jpg");
+              var newData = imageData.replace(/^data:image\/jpg/, "data:application/octet-stream");
+              $("#download").attr("download", "image.jpg").attr("href", newData);
+            }
+          });
+
+        });
+      });
+
+      document.getElementById('pfpic').width = document.getElementById('rangerw').value;
+function setVal(val){document.getElementById("pfpic").width = val;};
+
+var img = document.createElement('img');
+var uploadButton = document.getElementById('uploader');
+uploadButton.onchange = function(e) {
+var image = document.getElementById('pfpic');
+
+img.src = URL.createObjectURL(this.files[0]);
+image.src = img.src;
+
+}
+    </script>
+  </body>
+</html>

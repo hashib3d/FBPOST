@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FBPOST</title>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
+</head>
+<style>
+     *{
+    
+    margin:0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    box-sizing:border-box;
+
+
+} 
+
+.bg{
+   display: none;
+    
+   
+}
+
+.inpt{
+    display: none;
+    width: 21%;
+    font-size: 60;
+    padding: 10px 10px;
+    align-content: center;
+    margin: 40px 50px;
+}
+input[type=text], select {
+    font-family: Arial;
+    font-size: 30px;
+    margin: 8px 160px;
+    
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+
+ #frm{
+  margin-top: 500px;
+    
+
+} 
+
+
+
+label{
+    
+    width: 400px;
+    
+    background: #e3362c;
+    color: #fff;
+     padding: 10px;
+    margin: 5px 160px; 
+    border-radius: 5px;
+    cursor: pointer;
+    
+
+}
+#cnv{
+   
+margin-left: 300px;
+
+}
+ 
+#savebtn{
+    width: 21%;
+    font-size: 60;
+    padding: 10px 10px;
+    align-content: center;
+    margin: 40px 160px;
+    
+ }
+
+
+/* Create two equal columns that floats next to each other */
+.column {
+  float: left;
+  width: 50%;
+  padding: 10px;
+  height: 300px; /* Should be removed. Only for demonstration */
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.slidecontainer{
+  margin-bottom: 50px;
+  margin-left: 160px;
+  display: table;
+
+}
+
+.imge1{
+  margin: 2% 2%;
+  padding: 10% 10%;
+  position: absolute;
+  display: block inline;
+  
+  align-self: center;
+  align-items: center;
+  justify-content: center;
+ 
+}
+#pt{
+  margin-left: 10%;
+  
+  border: 2px black;
+  width: 700px;
+  height: 700px;
+  position: absolute;
+  display: flex;
+  align-self: center;
+  align-items: center;
+  justify-content: center;
+  z-index: -1;
+
+}
+</style>
+
+<body>
+    
+  <div class="row" id="htmlContent">
+    <div class="column">
+      
+        <div id="cnv">
+   
+          <canvas id="myCanvas" width="800" height="800" style="border:1px solid #d3d3d3;"></canvas></div>
+        
+        <div class="display"></div>
+ 
+        <img src="IMAGE/FB.png" alt="" id="bgimg" class="bg">
+        <figcaption id="caption"> FILE NAME</figcaption>
+        
+        <input type="file" accept="image/jpeg, image/png, image/jpg" id="uploader" class="inpt"> 
+    
+    </div>
+    <div class="column">
+      <div id="pt" ><img src="IMAGE/Hashib Image.jpg" alt="" id="image1" class="imge1" width="500 " height="500 "></div>
+      <div id="frm">
+        
+        
+      <label for="uploader" id="lvl">IMAGE LOADING</label> 
+      <input type="text" id="name" name="name" placeholder="">
+      <br/>
+      <button id="savebtn">SAVE</button>
+      </div>
+    </div> 
+  
+</div>
+
+<script>
+  
+var fileName = document.getElementById('caption');
+var canvas = document.getElementById('myCanvas');
+var ctx = canvas.getContext('2d');
+
+var txtName = document.getElementById('name');
+//background image
+var pic = new Image();
+pic.src = "IMAGE/FB.png";
+pic.onload = function(){
+ctx.drawImage(pic, 0,0, 800,800);
+ctx.fillStyle = "bla#707b7c";
+ctx.font = "bold 65px SutonnyMJ";
+//ctx.fillText(txtName, 30, 600, 300);
+};
+
+//profile pic upload
+
+
+var img = document.createElement('img');
+img.width = 100;
+var uploadButton = document.getElementById('uploader');
+uploadButton.onchange = function(e) {
+  
+var image = document.getElementById('image1');
+
+
+img.src = URL.createObjectURL(this.files[0]);
+image.src = img.src;
+
+
+img.onload = function(){
+
+ctx.drawImage(this, 300,100, 600, 600);    
+ctx.drawImage(pic, 0,0, 800,800);
+
+ctx.fillStyle = "bla#707b7c";
+ctx.font = "bold 60px SutonnyOMJ";
+ctx.fillText(txtName.value, 40, 350, 250);
+
+}
+
+//remove immage extension coding y = x.split("/").slice(-1).join().split(".").shift();
+var x = uploadButton.files[0].name; 
+y = x.split("/").slice(-1).join().split(".").shift();
+fileName.textContent = y;
+txtName.value = y;
+//listen
+window.addEventListener("keyup", draw, true);
+};
+
+function failed() {
+  console.error("The provided file couldn't be loaded as an Image media");
+};
+
+       var svbtn = document.getElementById('savebtn'); 
+        svbtn.addEventListener('click', function(e) {
+          //remove immage extension coding y = x.split("/").slice(-1).join().split(".").shift();
+          var x = uploadButton.files[0].name; 
+          y = x.split("/").slice(-1).join().split(".").shift();
+          fileName.textContent = y;
+          txtName.value = y;
+          // record canvas data for image
+        const canvasUrl = myCanvas.toDataURL("image/png", 0.5);
+        const createEl = document.createElement('a');
+        createEl.href = canvasUrl;
+        //name assign for save/download
+        createEl.download = y;
+        createEl.click();
+        createEl.remove();
+        
+        save();
+        
+   
+})
+
+function autoClick(){
+        $("#download").click();
+      }
+
+      $(document).ready(function(){
+        var element = $("#htmlContent");
+
+        $("#download").on('click', function(){
+
+          html2canvas(element, {
+            onrendered: function(canvas) {
+              var imageData = canvas.toDataURL("image/jpg");
+              var newData = imageData.replace(/^data:image\/jpg/, "data:application/octet-stream");
+              $("#download").attr("download", "image.jpg").attr("href", newData);
+            }
+          });
+
+        });
+      });
+        
+     
+ 
+</script>
+
+</body>
+
+</html>
